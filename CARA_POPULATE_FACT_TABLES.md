@@ -1,7 +1,7 @@
 # Cara Populate Fact Tables
 
 **PENTING**: Dashboard Admin Prodi menggunakan data dari fact tables. Jika fact tables belum ter-populate, semua nilai akan 0.
-
+ AWOIDYA*(WD*(AWHD(*AHW(*D))))
 ## Langkah-langkah
 
 ### 1. Pastikan Dimension Tables Sudah Ter-populate

@@ -1,5 +1,5 @@
 # Cara Reset Database dengan Preferensi Lengkap
-
+AOHWDAHWODHAOHDAWHOd
 ## ✅ Yang Sudah Diperbaiki
 
 Seeder `FreshDataSeeder` sekarang sudah membuat:
