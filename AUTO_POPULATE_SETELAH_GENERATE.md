@@ -3,7 +3,7 @@
 ## ✅ Fitur Baru
 
 Sistem sekarang **otomatis populate fact tables** setelah generate jadwal berhasil, sehingga dashboard langsung menampilkan data terbaru tanpa perlu menjalankan populate manual.
-
+woy anjing
 ## 🔧 Implementasi
 
 ### Di AdminProdiController

@@ -4,6 +4,7 @@
 
 Karena Calculator tidak tersedia, kita akan menghitung semua field langsung di SQL query.
 AWBDiuawgduiaWYDgAWuidgAWUIDGAWID GAOIWDBAWUId
+SsS
 ---
 
 ## 🚀 Cara 1: Menggunakan SQL Langsung (RECOMMENDED)
