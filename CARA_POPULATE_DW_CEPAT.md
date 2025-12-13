@@ -3,7 +3,7 @@
 ## ⚡ CARA TERCEPAT (RECOMMENDED)
 
 Jalankan script PHP langsung:
-
+adaadada
 ```bash
 php populate_dw.php
 ```
