@@ -1,0 +1,6 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Door shape -->
+  <path d="M4 6C4 5.44772 4.44772 5 5 5H9C9.55228 5 10 5.44772 10 6V18C10 18.5523 9.55228 19 9 19H5C4.44772 19 4 18.5523 4 18V6Z" fill="currentColor"/>
+  <!-- Arrow -->
+  <path d="M10 12H20M20 12L16 8M20 12L16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

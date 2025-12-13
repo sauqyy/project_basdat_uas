@@ -1,0 +1,139 @@
+SNOWFLAKE SCHEMA - DATA WAREHOUSE SISTEM GENERATE JADWAL
+========================================================
+
+                    FactJadwal (Fact Table)
+                           |
+        +------------------+------------------+
+        |                  |                  |
+    DimDosen          DimMataKuliah      DimRuangan
+        |                  |                  |
+        |                  |                  |
+    DimWaktu          DimProdi         DimPreferensi
+        |                  |                  |
+        |                  |                  |
+    (Time Dimension)  (Program Studi)   (Dosen Preferences)
+
+DETAILED RELATIONSHIPS:
+======================
+
+FactJadwal (Central Fact Table)
+├── Foreign Keys:
+│   ├── dosen_key → DimDosen.dosen_key
+│   ├── mata_kuliah_key → DimMataKuliah.mata_kuliah_key
+│   ├── ruangan_key → DimRuangan.ruangan_key
+│   ├── waktu_key → DimWaktu.waktu_key
+│   ├── prodi_key → DimProdi.prodi_key
+│   └── preferensi_key → DimPreferensi.preferensi_key (nullable)
+│
+├── Measures:
+│   ├── jumlah_sks
+│   ├── durasi_menit
+│   ├── kapasitas_kelas
+│   ├── jumlah_mahasiswa
+│   ├── utilisasi_ruangan
+│   ├── prioritas_preferensi
+│   ├── konflik_jadwal
+│   └── tingkat_konflik
+
+DimDosen (Dosen Dimension)
+├── Attributes:
+│   ├── dosen_key (Surrogate Key)
+│   ├── nip (Natural Key)
+│   ├── nama_dosen
+│   ├── email
+│   ├── prodi
+│   ├── role
+│   └── profile_picture
+│
+└── SCD Type 2:
+    ├── valid_from
+    ├── valid_to
+    └── is_active
+
+DimMataKuliah (Mata Kuliah Dimension)
+├── Attributes:
+│   ├── mata_kuliah_key (Surrogate Key)
+│   ├── kode_mk (Natural Key)
+│   ├── nama_mk
+│   ├── sks
+│   ├── semester
+│   ├── prodi
+│   ├── kapasitas
+│   └── tipe_kelas
+│
+└── SCD Type 2:
+    ├── valid_from
+    ├── valid_to
+    └── is_active
+
+DimRuangan (Ruangan Dimension)
+├── Attributes:
+│   ├── ruangan_key (Surrogate Key)
+│   ├── kode_ruangan (Natural Key)
+│   ├── nama_ruangan
+│   ├── kapasitas
+│   ├── tipe_ruangan
+│   └── fasilitas
+│
+└── SCD Type 2:
+    ├── valid_from
+    ├── valid_to
+    └── is_active
+
+DimWaktu (Time Dimension)
+├── Attributes:
+│   ├── waktu_key (Surrogate Key)
+│   ├── hari
+│   ├── jam_mulai
+│   ├── jam_selesai
+│   ├── semester
+│   ├── tahun_akademik
+│   ├── periode
+│   ├── hari_ke
+│   ├── slot_waktu
+│   └── durasi_menit
+
+DimProdi (Program Studi Dimension)
+├── Attributes:
+│   ├── prodi_key (Surrogate Key)
+│   ├── kode_prodi (Natural Key)
+│   ├── nama_prodi
+│   ├── fakultas
+│   └── akreditasi
+│
+└── SCD Type 2:
+    ├── valid_from
+    ├── valid_to
+    └── is_active
+
+DimPreferensi (Preferensi Dimension)
+├── Attributes:
+│   ├── preferensi_key (Surrogate Key)
+│   ├── dosen_id
+│   ├── mata_kuliah_id
+│   ├── preferensi_hari (JSON)
+│   ├── preferensi_jam (JSON)
+│   ├── prioritas
+│   └── catatan
+│
+└── SCD Type 2:
+    ├── valid_from
+    ├── valid_to
+    └── is_active
+
+BENEFITS OF THIS SNOWFLAKE DESIGN:
+==================================
+1. Normalized structure reduces data redundancy
+2. SCD Type 2 enables historical tracking
+3. Surrogate keys provide stable references
+4. Centralized measures in fact table
+5. Clear relationships between dimensions
+6. Optimized for analytical queries
+7. Supports complex reporting requirements
+8. Enables drill-down and roll-up operations
+
+
+
+
+
+

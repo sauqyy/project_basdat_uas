@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>03_Populate_Dim_Ruangan</name>
+    <description>Populate DimRuangan from ruangans table</description>
+    <extended_description>ETL Transformation to load DimRuangan dimension table from operational ruangans table.</extended_description>
+    <trans_version>1.0</trans_version>
+    <trans_type>Normal</trans_type>
+  </info>
+  <order>
+    <hop>
+      <from>Table Input - Ruangan</from>
+      <to>Calculator - Generate Keys</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator - Generate Keys</to>
+      <to>Table Output - DimRuangan</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <steps>
+    <step>
+      <name>Table Input - Ruangan</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT 
+    id,
+    kode_ruangan,
+    nama_ruangan,
+    kapasitas,
+    tipe_ruangan,
+    fasilitas,
+    prodi,
+    status,
+    created_at,
+    updated_at
+FROM ruangans
+ORDER BY kode_ruangan;</sql>
+    </step>
+    <step>
+      <name>Calculator - Generate Keys</name>
+      <type>Calculator</type>
+      <calculation>
+        <field>
+          <name>ruangan_key</name>
+          <type>String</type>
+          <value>CONCAT('R_', kode_ruangan)</value>
+        </field>
+        <field>
+          <name>is_active</name>
+          <type>Integer</type>
+          <value>1</value>
+        </field>
+        <field>
+          <name>valid_from</name>
+          <type>Date</type>
+          <value>created_at</value>
+        </field>
+        <field>
+          <name>valid_to</name>
+          <type>Date</type>
+          <value>NULL</value>
+        </field>
+      </calculation>
+    </step>
+    <step>
+      <name>Table Output - DimRuangan</name>
+      <type>TableOutput</type>
+      <connection>DW_Connection</connection>
+      <table>dim_ruangan</table>
+      <commit>1000</commit>
+      <use_batch>Y</use_batch>
+      <specify_fields>Y</specify_fields>
+      <fields>
+        <field><column>ruangan_key</column><name>ruangan_key</name></field>
+        <field><column>kode_ruangan</column><name>kode_ruangan</name></field>
+        <field><column>nama_ruangan</column><name>nama_ruangan</name></field>
+        <field><column>kapasitas</column><name>kapasitas</name></field>
+        <field><column>tipe_ruangan</column><name>tipe_ruangan</name></field>
+        <field><column>fasilitas</column><name>fasilitas</name></field>
+        <field><column>prodi</column><name>prodi</name></field>
+        <field><column>status</column><name>status</name></field>
+        <field><column>is_active</column><name>is_active</name></field>
+        <field><column>valid_from</column><name>valid_from</name></field>
+        <field><column>valid_to</column><name>valid_to</name></field>
+      </fields>
+    </step>
+  </steps>
+</transformation>
+

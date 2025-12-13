@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>05_Populate_Dim_Prodi</name>
+    <description>Populate DimProdi from unique prodi values</description>
+    <extended_description>ETL Transformation to generate DimProdi dimension from unique program studi values across multiple tables.</extended_description>
+    <trans_version>1.0</trans_version>
+    <trans_type>Normal</trans_type>
+  </info>
+  <order>
+    <hop>
+      <from>Table Input - Prodi from Users</from>
+      <to>Select Values - Prodi</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table Input - Prodi from MataKuliah</from>
+      <to>Select Values - Prodi</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Table Input - Prodi from Jadwal</from>
+      <to>Select Values - Prodi</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select Values - Prodi</from>
+      <to>Group By - Unique Prodi</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Group By - Unique Prodi</to>
+      <to>Calculator - Generate Keys</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator - Generate Keys</to>
+      <to>Table Output - DimProdi</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <steps>
+    <step>
+      <name>Table Input - Prodi from Users</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT DISTINCT prodi FROM users WHERE prodi IS NOT NULL AND prodi != ''</sql>
+    </step>
+    <step>
+      <name>Table Input - Prodi from MataKuliah</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT DISTINCT prodi FROM mata_kuliahs WHERE prodi IS NOT NULL AND prodi != ''</sql>
+    </step>
+    <step>
+      <name>Table Input - Prodi from Jadwal</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT DISTINCT prodi FROM jadwals WHERE prodi IS NOT NULL AND prodi != ''</sql>
+    </step>
+    <step>
+      <name>Select Values - Prodi</name>
+      <type>SelectValues</type>
+      <fields>
+        <field>
+          <name>prodi</name>
+          <rename>nama_prodi</rename>
+          <type>String</type>
+        </field>
+      </fields>
+    </step>
+    <step>
+      <name>Group By - Unique Prodi</name>
+      <type>GroupBy</type>
+      <group>
+        <name>nama_prodi</name>
+        <subject>nama_prodi</subject>
+        <type>Group</type>
+      </group>
+    </step>
+    <step>
+      <name>Calculator - Generate Keys</name>
+      <type>Calculator</type>
+      <calculation>
+        <field>
+          <name>kode_prodi</name>
+          <type>String</type>
+          <value>UPPER(SUBSTRING(REPLACE(nama_prodi, ' ', ''), 1, 10))</value>
+        </field>
+        <field>
+          <name>prodi_key</name>
+          <type>String</type>
+          <value>CONCAT('PRODI_', kode_prodi)</value>
+        </field>
+        <field>
+          <name>fakultas</name>
+          <type>String</type>
+          <value>CASE 
+    WHEN nama_prodi LIKE '%Teknik%' THEN 'Fakultas Teknik'
+    WHEN nama_prodi LIKE '%Ekonomi%' THEN 'Fakultas Ekonomi'
+    WHEN nama_prodi LIKE '%Hukum%' THEN 'Fakultas Hukum'
+    ELSE 'Fakultas Lainnya'
+END</value>
+        </field>
+        <field>
+          <name>is_active</name>
+          <type>Integer</type>
+          <value>1</value>
+        </field>
+        <field>
+          <name>valid_from</name>
+          <type>Date</type>
+          <value>NOW()</value>
+        </field>
+        <field>
+          <name>valid_to</name>
+          <type>Date</type>
+          <value>NULL</value>
+        </field>
+      </calculation>
+    </step>
+    <step>
+      <name>Table Output - DimProdi</name>
+      <type>TableOutput</type>
+      <connection>DW_Connection</connection>
+      <table>dim_prodi</table>
+      <commit>1000</commit>
+      <use_batch>Y</use_batch>
+      <specify_fields>Y</specify_fields>
+      <fields>
+        <field><column>prodi_key</column><name>prodi_key</name></field>
+        <field><column>kode_prodi</column><name>kode_prodi</name></field>
+        <field><column>nama_prodi</column><name>nama_prodi</name></field>
+        <field><column>fakultas</column><name>fakultas</name></field>
+        <field><column>is_active</column><name>is_active</name></field>
+        <field><column>valid_from</column><name>valid_from</name></field>
+        <field><column>valid_to</column><name>valid_to</name></field>
+      </fields>
+    </step>
+  </steps>
+</transformation>
+

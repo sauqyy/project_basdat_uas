@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>06_Populate_Dim_Preferensi</name>
+    <description>Populate DimPreferensi from preferensi_dosens table</description>
+    <extended_description>ETL Transformation to load DimPreferensi dimension table from operational preferensi_dosens table.</extended_description>
+    <trans_version>1.0</trans_version>
+    <trans_type>Normal</trans_type>
+  </info>
+  <order>
+    <hop>
+      <from>Table Input - Preferensi</from>
+      <to>Calculator - Generate Keys</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator - Generate Keys</to>
+      <to>Table Output - DimPreferensi</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <steps>
+    <step>
+      <name>Table Input - Preferensi</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT 
+    id,
+    dosen_id,
+    mata_kuliah_id,
+    preferensi_hari,
+    preferensi_jam,
+    prioritas,
+    catatan,
+    created_at,
+    updated_at
+FROM preferensi_dosens
+ORDER BY dosen_id, prioritas;</sql>
+    </step>
+    <step>
+      <name>Calculator - Generate Keys</name>
+      <type>Calculator</type>
+      <calculation>
+        <field>
+          <name>preferensi_key</name>
+          <type>String</type>
+          <value>CONCAT('PREF_', LTRIM(STR(id)))</value>
+        </field>
+        <field>
+          <name>is_active</name>
+          <type>Integer</type>
+          <value>1</value>
+        </field>
+        <field>
+          <name>valid_from</name>
+          <type>Date</type>
+          <value>created_at</value>
+        </field>
+        <field>
+          <name>valid_to</name>
+          <type>Date</type>
+          <value>NULL</value>
+        </field>
+      </calculation>
+    </step>
+    <step>
+      <name>Table Output - DimPreferensi</name>
+      <type>TableOutput</type>
+      <connection>DW_Connection</connection>
+      <table>dim_preferensi</table>
+      <commit>1000</commit>
+      <use_batch>Y</use_batch>
+      <specify_fields>Y</specify_fields>
+      <fields>
+        <field><column>preferensi_key</column><name>preferensi_key</name></field>
+        <field><column>dosen_id</column><name>dosen_id</name></field>
+        <field><column>mata_kuliah_id</column><name>mata_kuliah_id</name></field>
+        <field><column>preferensi_hari</column><name>preferensi_hari</name></field>
+        <field><column>preferensi_jam</column><name>preferensi_jam</name></field>
+        <field><column>prioritas</column><name>prioritas</name></field>
+        <field><column>catatan</column><name>catatan</name></field>
+        <field><column>is_active</column><name>is_active</name></field>
+        <field><column>valid_from</column><name>valid_from</name></field>
+        <field><column>valid_to</column><name>valid_to</name></field>
+      </fields>
+    </step>
+  </steps>
+</transformation>
+

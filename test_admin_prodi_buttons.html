@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Prodi Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Test Admin Prodi Buttons</h2>
+        <p>Ini adalah test untuk memastikan tombol edit dan delete berfungsi dengan benar.</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Test Dosen</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Raihan Naufal Sauqi</td>
+                                <td>raihan@kampusmerdeka.ac.id</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning me-1 edit-dosen-btn" data-id="1" title="Edit Dosen">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger delete-dosen-btn" data-id="1" data-name="Raihan Naufal Sauqi" title="Hapus Dosen">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Raihan Naufal</td>
+                                <td>rai@kampusmerdeka.ac.id</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning me-1 edit-dosen-btn" data-id="2" title="Edit Dosen">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger delete-dosen-btn" data-id="2" data-name="Raihan Naufal" title="Hapus Dosen">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <h4>Test Mata Kuliah</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Kode MK</th>
+                                <th>Nama MK</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>MK001</td>
+                                <td>Pemrograman Web</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning me-1 edit-mk-btn" data-id="1" title="Edit Mata Kuliah">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger delete-mk-btn" data-id="1" data-name="Pemrograman Web" title="Hapus Mata Kuliah">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>MK002</td>
+                                <td>Basis Data</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning me-1 edit-mk-btn" data-id="2" title="Edit Mata Kuliah">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger delete-mk-btn" data-id="2" data-name="Basis Data" title="Hapus Mata Kuliah">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <h4>Console Output:</h4>
+            <div id="console-output" class="bg-dark text-light p-3" style="height: 300px; overflow-y: auto; font-family: monospace;">
+                <div>Console output will appear here...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Test Functions -->
+    <script>
+        // Override console.log to show in page
+        const originalLog = console.log;
+        const consoleOutput = document.getElementById('console-output');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const div = document.createElement('div');
+            div.textContent = new Date().toLocaleTimeString() + ': ' + args.join(' ');
+            div.style.marginBottom = '5px';
+            div.style.fontSize = '12px';
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        };
+        
+        // Global variables
+        let deleteDosenId = null;
+        let deleteMataKuliahId = null;
+        
+        // Edit Dosen Function
+        function editDosen(id) {
+            console.log('editDosen called with id:', id);
+            alert('Edit Dosen function called with ID: ' + id);
+        }
+        
+        // Delete Dosen Function
+        function deleteDosen(id, name) {
+            console.log('deleteDosen called with id:', id, 'name:', name);
+            alert('Delete Dosen function called with ID: ' + id + ', Name: ' + name);
+        }
+        
+        // Edit Mata Kuliah Function
+        function editMataKuliah(id) {
+            console.log('editMataKuliah called with id:', id);
+            alert('Edit Mata Kuliah function called with ID: ' + id);
+        }
+        
+        // Delete Mata Kuliah Function
+        function deleteMataKuliah(id, name) {
+            console.log('deleteMataKuliah called with id:', id, 'name:', name);
+            alert('Delete Mata Kuliah function called with ID: ' + id + ', Name: ' + name);
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up event listeners...');
+            
+            // Edit dosen button event listeners
+            const editDosenButtons = document.querySelectorAll('.edit-dosen-btn');
+            console.log('Found edit dosen buttons:', editDosenButtons.length);
+            
+            editDosenButtons.forEach((btn, index) => {
+                console.log(`Setting up edit dosen button ${index}:`, btn);
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    console.log('Edit dosen button clicked, id:', id);
+                    editDosen(id);
+                });
+            });
+            
+            // Delete dosen button event listeners
+            const deleteDosenButtons = document.querySelectorAll('.delete-dosen-btn');
+            console.log('Found delete dosen buttons:', deleteDosenButtons.length);
+            
+            deleteDosenButtons.forEach((btn, index) => {
+                console.log(`Setting up delete dosen button ${index}:`, btn);
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    console.log('Delete dosen button clicked, id:', id, 'name:', name);
+                    deleteDosen(id, name);
+                });
+            });
+            
+            // Edit mata kuliah button event listeners
+            const editMkButtons = document.querySelectorAll('.edit-mk-btn');
+            console.log('Found edit mata kuliah buttons:', editMkButtons.length);
+            
+            editMkButtons.forEach((btn, index) => {
+                console.log(`Setting up edit mata kuliah button ${index}:`, btn);
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    console.log('Edit mata kuliah button clicked, id:', id);
+                    editMataKuliah(id);
+                });
+            });
+            
+            // Delete mata kuliah button event listeners
+            const deleteMkButtons = document.querySelectorAll('.delete-mk-btn');
+            console.log('Found delete mata kuliah buttons:', deleteMkButtons.length);
+            
+            deleteMkButtons.forEach((btn, index) => {
+                console.log(`Setting up delete mata kuliah button ${index}:`, btn);
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const name = this.getAttribute('data-name');
+                    console.log('Delete mata kuliah button clicked, id:', id, 'name:', name);
+                    deleteMataKuliah(id, name);
+                });
+            });
+            
+            // Test if Bootstrap is available
+            console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+            console.log('Bootstrap Modal available:', typeof bootstrap?.Modal !== 'undefined');
+            
+            console.log('All event listeners set up successfully!');
+        });
+    </script>
+</body>
+</html>

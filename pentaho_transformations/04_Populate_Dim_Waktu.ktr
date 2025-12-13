@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>04_Populate_Dim_Waktu</name>
+    <description>Populate DimWaktu from jadwals table (generate time dimension)</description>
+    <extended_description>ETL Transformation to generate DimWaktu dimension from unique combinations of hari, jam_mulai, jam_selesai, semester, and tahun_akademik from jadwals table.</extended_description>
+    <trans_version>1.0</trans_version>
+    <trans_type>Normal</trans_type>
+  </info>
+  <order>
+    <hop>
+      <from>Table Input - Jadwal</from>
+      <to>Group By - Unique Time</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Group By - Unique Time</to>
+      <to>Calculator - Generate Keys</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator - Generate Keys</to>
+      <to>Table Output - DimWaktu</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <steps>
+    <step>
+      <name>Table Input - Jadwal</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT DISTINCT
+    hari,
+    jam_mulai,
+    jam_selesai,
+    semester,
+    tahun_akademik
+FROM jadwals
+WHERE status = 1
+ORDER BY hari, jam_mulai;</sql>
+    </step>
+    <step>
+      <name>Group By - Unique Time</name>
+      <type>GroupBy</type>
+      <group>
+        <name>hari</name>
+        <subject>hari</subject>
+        <type>Group</type>
+      </group>
+      <group>
+        <name>jam_mulai</name>
+        <subject>jam_mulai</subject>
+        <type>Group</type>
+      </group>
+      <group>
+        <name>jam_selesai</name>
+        <subject>jam_selesai</subject>
+        <type>Group</type>
+      </group>
+      <group>
+        <name>semester</name>
+        <subject>semester</subject>
+        <type>Group</type>
+      </group>
+      <group>
+        <name>tahun_akademik</name>
+        <subject>tahun_akademik</subject>
+        <type>Group</type>
+      </group>
+    </step>
+    <step>
+      <name>Calculator - Generate Keys</name>
+      <type>Calculator</type>
+      <calculation>
+        <field>
+          <name>waktu_key</name>
+          <type>String</type>
+          <value>CONCAT(hari, '_', REPLACE(jam_mulai, ':', ''), '_', REPLACE(jam_selesai, ':', ''), '_', semester, '_', tahun_akademik)</value>
+        </field>
+        <field>
+          <name>hari_ke</name>
+          <type>Integer</type>
+          <value>CASE 
+    WHEN hari = 'Senin' THEN 1
+    WHEN hari = 'Selasa' THEN 2
+    WHEN hari = 'Rabu' THEN 3
+    WHEN hari = 'Kamis' THEN 4
+    WHEN hari = 'Jumat' THEN 5
+    ELSE 0
+END</value>
+        </field>
+        <field>
+          <name>slot_waktu</name>
+          <type>String</type>
+          <value>CASE 
+    WHEN HOUR(jam_mulai) &lt; 12 THEN 'Pagi'
+    WHEN HOUR(jam_mulai) &lt; 15 THEN 'Siang'
+    ELSE 'Sore'
+END</value>
+        </field>
+        <field>
+          <name>durasi_menit</name>
+          <type>Integer</type>
+          <value>TIMESTAMPDIFF(MINUTE, jam_mulai, jam_selesai)</value>
+        </field>
+        <field>
+          <name>periode</name>
+          <type>String</type>
+          <value>CASE 
+    WHEN MOD(semester, 2) = 1 THEN 'Ganjil'
+    ELSE 'Genap'
+END</value>
+        </field>
+        <field>
+          <name>is_active</name>
+          <type>Integer</type>
+          <value>1</value>
+        </field>
+      </calculation>
+    </step>
+    <step>
+      <name>Table Output - DimWaktu</name>
+      <type>TableOutput</type>
+      <connection>DW_Connection</connection>
+      <table>dim_waktu</table>
+      <commit>1000</commit>
+      <use_batch>Y</use_batch>
+      <specify_fields>Y</specify_fields>
+      <fields>
+        <field><column>waktu_key</column><name>waktu_key</name></field>
+        <field><column>hari</column><name>hari</name></field>
+        <field><column>jam_mulai</column><name>jam_mulai</name></field>
+        <field><column>jam_selesai</column><name>jam_selesai</name></field>
+        <field><column>semester</column><name>semester</name></field>
+        <field><column>tahun_akademik</column><name>tahun_akademik</name></field>
+        <field><column>periode</column><name>periode</name></field>
+        <field><column>hari_ke</column><name>hari_ke</name></field>
+        <field><column>slot_waktu</column><name>slot_waktu</name></field>
+        <field><column>durasi_menit</column><name>durasi_menit</name></field>
+        <field><column>is_active</column><name>is_active</name></field>
+      </fields>
+    </step>
+  </steps>
+</transformation>
+

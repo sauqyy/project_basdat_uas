@@ -1,0 +1,95 @@
+SNOWFLAKE SCHEMA DIAGRAM
+========================
+
+                    ┌─────────────────────────────────┐
+                    │           FactJadwal            │
+                    │        (Fact Table)             │
+                    │                                 │
+                    │  Foreign Keys:                  │
+                    │  ├─ dosen_key                   │
+                    │  ├─ mata_kuliah_key             │
+                    │  ├─ ruangan_key                 │
+                    │  ├─ waktu_key                   │
+                    │  ├─ prodi_key                   │
+                    │  └─ preferensi_key              │
+                    │                                 │
+                    │  Measures:                      │
+                    │  ├─ jumlah_sks                  │
+                    │  ├─ durasi_menit                │
+                    │  ├─ kapasitas_kelas             │
+                    │  ├─ jumlah_mahasiswa            │
+                    │  ├─ utilisasi_ruangan           │
+                    │  ├─ prioritas_preferensi        │
+                    │  ├─ konflik_jadwal              │
+                    │  └─ tingkat_konflik              │
+                    └─────────────────────────────────┘
+                              │
+                    ┌─────────┼─────────┐
+                    │         │         │
+            ┌───────▼──────┐  │  ┌──────▼──────┐
+            │  DimDosen    │  │  │DimMataKuliah│
+            │              │  │  │             │
+            │ dosen_key    │  │  │mata_kuliah_ │
+            │ nip          │  │  │    key      │
+            │ nama_dosen   │  │  │ kode_mk     │
+            │ email        │  │  │ nama_mk     │
+            │ prodi        │  │  │ sks         │
+            │ role         │  │  │ semester    │
+            │ valid_from   │  │  │ kapasitas   │
+            │ valid_to     │  │  │ valid_from  │
+            └──────────────┘  │  │ valid_to    │
+                              │  └─────────────┘
+                              │
+            ┌─────────────────┼─────────────────┐
+            │                 │                 │
+    ┌───────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
+    │ DimRuangan   │  │  DimWaktu   │  │  DimProdi   │
+    │              │  │             │  │             │
+    │ ruangan_key  │  │ waktu_key   │  │ prodi_key   │
+    │ kode_ruangan │  │ hari        │  │ kode_prodi  │
+    │ nama_ruangan │  │ jam_mulai   │  │ nama_prodi  │
+    │ kapasitas    │  │ jam_selesai │  │ fakultas    │
+    │ tipe_ruangan │  │ semester    │  │ akreditasi  │
+    │ fasilitas    │  │ tahun_akad. │  │ valid_from  │
+    │ prodi        │  │ periode     │  │ valid_to    │
+    │ valid_from   │  │ slot_waktu  │  └─────────────┘
+    │ valid_to     │  │ durasi_menit│
+    └──────────────┘  └─────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │   DimPreferensi   │
+                    │                   │
+                    │ preferensi_key    │
+                    │ dosen_id          │
+                    │ mata_kuliah_id    │
+                    │ preferensi_hari  │
+                    │ preferensi_jam    │
+                    │ prioritas         │
+                    │ catatan           │
+                    │ valid_from        │
+                    │ valid_to          │
+                    └───────────────────┘
+
+RELATIONSHIPS:
+==============
+FactJadwal.dosen_key → DimDosen.dosen_key
+FactJadwal.mata_kuliah_key → DimMataKuliah.mata_kuliah_key
+FactJadwal.ruangan_key → DimRuangan.ruangan_key
+FactJadwal.waktu_key → DimWaktu.waktu_key
+FactJadwal.prodi_key → DimProdi.prodi_key
+FactJadwal.preferensi_key → DimPreferensi.preferensi_key
+
+KEY FEATURES:
+=============
+✅ Snowflake Architecture
+✅ SCD Type 2 Support
+✅ Surrogate Keys
+✅ Centralized Measures
+✅ Optimized Indexing
+✅ Historical Tracking
+
+
+
+
+
+

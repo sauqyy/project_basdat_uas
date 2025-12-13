@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>07_Populate_Fact_Jadwal</name>
+    <description>Populate FactJadwal from jadwals table with dimension lookups</description>
+    <extended_description>ETL Transformation to load FactJadwal fact table from operational jadwals table. Includes lookups to all dimension tables and calculation of measures.</extended_description>
+    <trans_version>1.0</trans_version>
+    <trans_type>Normal</trans_type>
+  </info>
+  <order>
+    <hop>
+      <from>Table Input - Jadwal</from>
+      <to>Database Lookup - DimDosen</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database Lookup - DimDosen</from>
+      <to>Database Lookup - DimMataKuliah</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database Lookup - DimMataKuliah</from>
+      <to>Database Lookup - DimRuangan</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database Lookup - DimRuangan</from>
+      <to>Database Lookup - DimWaktu</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database Lookup - DimWaktu</from>
+      <to>Database Lookup - DimProdi</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database Lookup - DimProdi</from>
+      <to>Database Lookup - DimPreferensi</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Database Lookup - DimPreferensi</from>
+      <to>Calculator - Calculate Measures</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator - Calculate Measures</from>
+      <to>Table Output - FactJadwal</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <steps>
+    <step>
+      <name>Table Input - Jadwal</name>
+      <type>TableInput</type>
+      <connection>Operational_DB</connection>
+      <sql>SELECT 
+    j.id,
+    j.mata_kuliah_id,
+    j.ruangan_id,
+    j.hari,
+    j.jam_mulai,
+    j.jam_selesai,
+    j.semester,
+    j.tahun_akademik,
+    j.prodi,
+    j.status,
+    j.created_at,
+    j.updated_at,
+    mk.dosen_id,
+    mk.sks,
+    mk.kapasitas,
+    r.kode_ruangan,
+    r.kapasitas as kapasitas_ruangan
+FROM jadwals j
+INNER JOIN mata_kuliahs mk ON j.mata_kuliah_id = mk.id
+INNER JOIN ruangans r ON j.ruangan_id = r.id
+WHERE j.status = 1;</sql>
+    </step>
+    <step>
+      <name>Database Lookup - DimDosen</name>
+      <type>DatabaseLookup</type>
+      <connection>DW_Connection</connection>
+      <schema/>
+      <table>dim_dosen</table>
+      <orderby/>
+      <fail_on_multiple>Y</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>nip</name>
+        <field>dosen_id</field>
+        <condition>=</condition>
+      </key>
+      <value>
+        <name>dosen_key</name>
+        <rename>dosen_key</rename>
+        <default/>
+        <type>String</type>
+      </value>
+    </step>
+    <step>
+      <name>Database Lookup - DimMataKuliah</name>
+      <type>DatabaseLookup</type>
+      <connection>DW_Connection</connection>
+      <table>dim_mata_kuliah</table>
+      <key>
+        <name>kode_mk</name>
+        <field>mata_kuliah_id</field>
+        <condition>=</condition>
+      </key>
+      <value>
+        <name>mata_kuliah_key</name>
+        <rename>mata_kuliah_key</rename>
+        <type>String</type>
+      </value>
+    </step>
+    <step>
+      <name>Database Lookup - DimRuangan</name>
+      <type>DatabaseLookup</type>
+      <connection>DW_Connection</connection>
+      <table>dim_ruangan</table>
+      <key>
+        <name>kode_ruangan</name>
+        <field>kode_ruangan</field>
+        <condition>=</condition>
+      </key>
+      <value>
+        <name>ruangan_key</name>
+        <rename>ruangan_key</rename>
+        <type>String</type>
+      </value>
+    </step>
+    <step>
+      <name>Database Lookup - DimWaktu</name>
+      <type>DatabaseLookup</type>
+      <connection>DW_Connection</connection>
+      <table>dim_waktu</table>
+      <key>
+        <name>hari</name>
+        <field>hari</field>
+        <condition>=</condition>
+      </key>
+      <key>
+        <name>jam_mulai</name>
+        <field>jam_mulai</field>
+        <condition>=</condition>
+      </key>
+      <key>
+        <name>jam_selesai</name>
+        <field>jam_selesai</field>
+        <condition>=</condition>
+      </key>
+      <value>
+        <name>waktu_key</name>
+        <rename>waktu_key</rename>
+        <type>String</type>
+      </value>
+    </step>
+    <step>
+      <name>Database Lookup - DimProdi</name>
+      <type>DatabaseLookup</type>
+      <connection>DW_Connection</connection>
+      <table>dim_prodi</table>
+      <key>
+        <name>nama_prodi</name>
+        <field>prodi</field>
+        <condition>=</condition>
+      </key>
+      <value>
+        <name>prodi_key</name>
+        <rename>prodi_key</rename>
+        <type>String</type>
+      </value>
+    </step>
+    <step>
+      <name>Database Lookup - DimPreferensi</name>
+      <type>DatabaseLookup</type>
+      <connection>DW_Connection</connection>
+      <table>dim_preferensi</table>
+      <key>
+        <name>dosen_id</name>
+        <field>dosen_id</field>
+        <condition>=</condition>
+      </key>
+      <key>
+        <name>mata_kuliah_id</name>
+        <field>mata_kuliah_id</field>
+        <condition>=</condition>
+      </key>
+      <value>
+        <name>preferensi_key</name>
+        <rename>preferensi_key</rename>
+        <type>String</type>
+      </value>
+      <fail_on_multiple>N</fail_on_multiple>
+    </step>
+    <step>
+      <name>Calculator - Calculate Measures</name>
+      <type>Calculator</type>
+      <calculation>
+        <field>
+          <name>jumlah_sks</name>
+          <type>Integer</type>
+          <value>sks</value>
+        </field>
+        <field>
+          <name>durasi_menit</name>
+          <type>Integer</type>
+          <value>TIMESTAMPDIFF(MINUTE, jam_mulai, jam_selesai)</value>
+        </field>
+        <field>
+          <name>kapasitas_kelas</name>
+          <type>Integer</type>
+          <value>kapasitas</value>
+        </field>
+        <field>
+          <name>jumlah_mahasiswa</name>
+          <type>Integer</type>
+          <value>kapasitas</value>
+        </field>
+        <field>
+          <name>utilisasi_ruangan</name>
+          <type>Number</type>
+          <value>CASE 
+    WHEN kapasitas_ruangan > 0 THEN (kapasitas / kapasitas_ruangan) * 100
+    ELSE 0
+END</value>
+        </field>
+        <field>
+          <name>status_aktif</name>
+          <type>Integer</type>
+          <value>CASE WHEN status = 1 THEN 1 ELSE 0 END</value>
+        </field>
+        <field>
+          <name>konflik_jadwal</name>
+          <type>Integer</type>
+          <value>0</value>
+        </field>
+        <field>
+          <name>tingkat_konflik</name>
+          <type>Integer</type>
+          <value>0</value>
+        </field>
+      </calculation>
+    </step>
+    <step>
+      <name>Table Output - FactJadwal</name>
+      <type>TableOutput</type>
+      <connection>DW_Connection</connection>
+      <table>fact_jadwal</table>
+      <commit>1000</commit>
+      <truncate>N</truncate>
+      <use_batch>Y</use_batch>
+      <specify_fields>Y</specify_fields>
+      <fields>
+        <field><column>dosen_key</column><name>dosen_key</name></field>
+        <field><column>mata_kuliah_key</column><name>mata_kuliah_key</name></field>
+        <field><column>ruangan_key</column><name>ruangan_key</name></field>
+        <field><column>waktu_key</column><name>waktu_key</name></field>
+        <field><column>prodi_key</column><name>prodi_key</name></field>
+        <field><column>preferensi_key</column><name>preferensi_key</name></field>
+        <field><column>jumlah_sks</column><name>jumlah_sks</name></field>
+        <field><column>durasi_menit</column><name>durasi_menit</name></field>
+        <field><column>kapasitas_kelas</column><name>kapasitas_kelas</name></field>
+        <field><column>jumlah_mahasiswa</column><name>jumlah_mahasiswa</name></field>
+        <field><column>utilisasi_ruangan</column><name>utilisasi_ruangan</name></field>
+        <field><column>status_aktif</column><name>status_aktif</name></field>
+        <field><column>konflik_jadwal</column><name>konflik_jadwal</name></field>
+        <field><column>tingkat_konflik</column><name>tingkat_konflik</name></field>
+        <field><column>created_at_jadwal</column><name>created_at</name></field>
+        <field><column>updated_at_jadwal</column><name>updated_at</name></field>
+      </fields>
+    </step>
+  </steps>
+</transformation>
+

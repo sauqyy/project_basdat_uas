@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCHEDIFY - Landing Page</title>
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            overflow: hidden;
+        }
+
+        body {
+            height: 100vh;
+            font-family: 'Lato', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-circle {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 300;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.7;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 300;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: #1B2735;
+        }
+
+        /* Star Animations */
+        #stars {
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            animation: animStar 50s linear infinite;
+        }
+
+        #stars:after {
+            content: " ";
+            position: absolute;
+            top: 2000px;
+            width: 1px;
+            height: 1px;
+            background: transparent;
+        }
+
+        #stars2 {
+            width: 2px;
+            height: 2px;
+            background: transparent;
+            animation: animStar 100s linear infinite;
+        }
+
+        #stars2:after {
+            content: " ";
+            position: absolute;
+            top: 2000px;
+            width: 2px;
+            height: 2px;
+            background: transparent;
+        }
+
+        #stars3 {
+            width: 3px;
+            height: 3px;
+            background: transparent;
+            animation: animStar 150s linear infinite;
+        }
+
+        #stars3:after {
+            content: " ";
+            position: absolute;
+            top: 2000px;
+            width: 3px;
+            height: 3px;
+            background: transparent;
+        }
+
+        /* Main Title */
+        #title {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            color: #FFF;
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+            font-weight: 300;
+            font-size: 50px;
+            letter-spacing: 10px;
+            margin-top: -60px;
+            padding-left: 10px;
+            z-index: 100;
+        }
+
+        #title span {
+            background: -webkit-linear-gradient(white, #38495a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            opacity: 0.9;
+        }
+
+        @keyframes animStar {
+            from {
+                transform: translateY(0px);
+            }
+            to {
+                transform: translateY(-2000px);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .nav-menu a {
+                font-size: 12px;
+            }
+
+            #title {
+                font-size: 30px;
+                letter-spacing: 5px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+                letter-spacing: 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-circle"></div>
+            <span class="logo-text">SCHEDIFY</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About us</a></li>
+            <li><a href="#contact">Contact us</a></li>
+        </ul>
+        
+        <a href="/login" class="login-btn">Login</a>
+    </nav>
+
+    <!-- Star Animations -->
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+
+    <!-- Main Title -->
+    <div id="title">
+        <span>SCHEDIFY</span>
+        <br>
+        <span class="subtitle">"Integrated Class & Schedule Plotting System for Study Programs"</span>
+    </div>
+
+    <script>
+        // Function to generate random star positions
+        function multipleBoxShadow(n) {
+            let value = '';
+            for (let i = 0; i < n; i++) {
+                const x = Math.floor(Math.random() * 2000);
+                const y = Math.floor(Math.random() * 2000);
+                value += `${x}px ${y}px #FFF`;
+                if (i < n - 1) {
+                    value += ', ';
+                }
+            }
+            return value;
+        }
+
+        // Generate stars for each layer
+        const shadowsSmall = multipleBoxShadow(700);
+        const shadowsMedium = multipleBoxShadow(200);
+        const shadowsBig = multipleBoxShadow(100);
+
+        // Apply shadows to star elements
+        document.getElementById('stars').style.boxShadow = shadowsSmall;
+        document.getElementById('stars').querySelector(':after') ? 
+            document.getElementById('stars').querySelector(':after').style.boxShadow = shadowsSmall : null;
+
+        document.getElementById('stars2').style.boxShadow = shadowsMedium;
+        document.getElementById('stars2').querySelector(':after') ? 
+            document.getElementById('stars2').querySelector(':after').style.boxShadow = shadowsMedium : null;
+
+        document.getElementById('stars3').style.boxShadow = shadowsBig;
+        document.getElementById('stars3').querySelector(':after') ? 
+            document.getElementById('stars3').querySelector(':after').style.boxShadow = shadowsBig : null;
+
+        // Add some interactivity
+        document.querySelector('.login-btn').addEventListener('click', function() {
+            // Navigation is handled by the href attribute
+        });
+
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Add smooth scroll functionality here
+            });
+        });
+
+        // Regenerate stars every 30 seconds for variety
+        setInterval(() => {
+            const newShadowsSmall = multipleBoxShadow(700);
+            const newShadowsMedium = multipleBoxShadow(200);
+            const newShadowsBig = multipleBoxShadow(100);
+
+            document.getElementById('stars').style.boxShadow = newShadowsSmall;
+            document.getElementById('stars2').style.boxShadow = newShadowsMedium;
+            document.getElementById('stars3').style.boxShadow = newShadowsBig;
+        }, 30000);
+    </script>
+</body>
+</html>

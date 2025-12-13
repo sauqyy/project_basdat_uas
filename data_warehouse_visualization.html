@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Warehouse Snowflake - Sistem Generate Jadwal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .schema-container {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .fact-table {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 0 auto 40px auto;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+        
+        .fact-table h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.8em;
+        }
+        
+        .fact-table .subtitle {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .fact-measures {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        
+        .fact-measures h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+        }
+        
+        .measures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .dimension-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .dimension-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .dimension-card.dim-dosen { border-left-color: #3498db; }
+        .dimension-card.dim-mata-kuliah { border-left-color: #2ecc71; }
+        .dimension-card.dim-ruangan { border-left-color: #f39c12; }
+        .dimension-card.dim-waktu { border-left-color: #9b59b6; }
+        .dimension-card.dim-prodi { border-left-color: #1abc9c; }
+        .dimension-card.dim-preferensi { border-left-color: #e67e22; }
+        
+        .dimension-card h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        
+        .attributes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+        
+        .attribute {
+            padding: 5px 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            border-left: 3px solid #bdc3c7;
+        }
+        
+        .attribute.key {
+            background: #d5dbdb;
+            border-left-color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .attribute.scd {
+            background: #e8f5e8;
+            border-left-color: #27ae60;
+        }
+        
+        .connections {
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .connection-line {
+            position: absolute;
+            background: #34495e;
+            height: 2px;
+            transform-origin: left center;
+        }
+        
+        .legend {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .legend h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        
+        .benefits {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 15px;
+        }
+        
+        .benefits h3 {
+            margin: 0 0 20px 0;
+            font-size: 1.5em;
+        }
+        
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .benefit-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .benefit-item h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .benefit-item p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Data Warehouse Snowflake</h1>
+            <p>Sistem Generate Jadwal - Arsitektur Data Warehouse</p>
+        </div>
+        
+        <div class="schema-container">
+            <!-- Fact Table -->
+            <div class="fact-table">
+                <h2>📊 FactJadwal</h2>
+                <p class="subtitle">Tabel Fakta Pusat - Central Fact Table</p>
+                <div class="fact-measures">
+                    <h4>📈 Measures (Fakta Bisnis)</h4>
+                    <div class="measures-grid">
+                        <div class="attribute key">jumlah_sks</div>
+                        <div class="attribute key">durasi_menit</div>
+                        <div class="attribute key">kapasitas_kelas</div>
+                        <div class="attribute key">jumlah_mahasiswa</div>
+                        <div class="attribute key">utilisasi_ruangan</div>
+                        <div class="attribute key">prioritas_preferensi</div>
+                        <div class="attribute key">konflik_jadwal</div>
+                        <div class="attribute key">tingkat_konflik</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dimensions -->
+            <div class="dimensions-grid">
+                <div class="dimension-card dim-dosen">
+                    <h3>👨‍🏫 DimDosen</h3>
+                    <div class="attributes">
+                        <div class="attribute key">dosen_key</div>
+                        <div class="attribute">nip</div>
+                        <div class="attribute">nama_dosen</div>
+                        <div class="attribute">email</div>
+                        <div class="attribute">prodi</div>
+                        <div class="attribute">role</div>
+                        <div class="attribute scd">valid_from</div>
+                        <div class="attribute scd">valid_to</div>
+                    </div>
+                </div>
+                
+                <div class="dimension-card dim-mata-kuliah">
+                    <h3>📚 DimMataKuliah</h3>
+                    <div class="attributes">
+                        <div class="attribute key">mata_kuliah_key</div>
+                        <div class="attribute">kode_mk</div>
+                        <div class="attribute">nama_mk</div>
+                        <div class="attribute">sks</div>
+                        <div class="attribute">semester</div>
+                        <div class="attribute">kapasitas</div>
+                        <div class="attribute">tipe_kelas</div>
+                        <div class="attribute scd">valid_from</div>
+                        <div class="attribute scd">valid_to</div>
+                    </div>
+                </div>
+                
+                <div class="dimension-card dim-ruangan">
+                    <h3>🏢 DimRuangan</h3>
+                    <div class="attributes">
+                        <div class="attribute key">ruangan_key</div>
+                        <div class="attribute">kode_ruangan</div>
+                        <div class="attribute">nama_ruangan</div>
+                        <div class="attribute">kapasitas</div>
+                        <div class="attribute">tipe_ruangan</div>
+                        <div class="attribute">fasilitas</div>
+                        <div class="attribute">prodi</div>
+                        <div class="attribute scd">valid_from</div>
+                        <div class="attribute scd">valid_to</div>
+                    </div>
+                </div>
+                
+                <div class="dimension-card dim-waktu">
+                    <h3>⏰ DimWaktu</h3>
+                    <div class="attributes">
+                        <div class="attribute key">waktu_key</div>
+                        <div class="attribute">hari</div>
+                        <div class="attribute">jam_mulai</div>
+                        <div class="attribute">jam_selesai</div>
+                        <div class="attribute">semester</div>
+                        <div class="attribute">tahun_akademik</div>
+                        <div class="attribute">periode</div>
+                        <div class="attribute">slot_waktu</div>
+                        <div class="attribute">durasi_menit</div>
+                    </div>
+                </div>
+                
+                <div class="dimension-card dim-prodi">
+                    <h3>🎓 DimProdi</h3>
+                    <div class="attributes">
+                        <div class="attribute key">prodi_key</div>
+                        <div class="attribute">kode_prodi</div>
+                        <div class="attribute">nama_prodi</div>
+                        <div class="attribute">fakultas</div>
+                        <div class="attribute">deskripsi</div>
+                        <div class="attribute">akreditasi</div>
+                        <div class="attribute scd">valid_from</div>
+                        <div class="attribute scd">valid_to</div>
+                    </div>
+                </div>
+                
+                <div class="dimension-card dim-preferensi">
+                    <h3>⭐ DimPreferensi</h3>
+                    <div class="attributes">
+                        <div class="attribute key">preferensi_key</div>
+                        <div class="attribute">dosen_id</div>
+                        <div class="attribute">mata_kuliah_id</div>
+                        <div class="attribute">preferensi_hari</div>
+                        <div class="attribute">preferensi_jam</div>
+                        <div class="attribute">prioritas</div>
+                        <div class="attribute">catatan</div>
+                        <div class="attribute scd">valid_from</div>
+                        <div class="attribute scd">valid_to</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Legend -->
+            <div class="legend">
+                <h3>📋 Legend</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e74c3c;"></div>
+                        <span><strong>Fact Table</strong> - Tabel Fakta Pusat</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #3498db;"></div>
+                        <span><strong>DimDosen</strong> - Dimensi Dosen</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2ecc71;"></div>
+                        <span><strong>DimMataKuliah</strong> - Dimensi Mata Kuliah</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #f39c12;"></div>
+                        <span><strong>DimRuangan</strong> - Dimensi Ruangan</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9b59b6;"></div>
+                        <span><strong>DimWaktu</strong> - Dimensi Waktu</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #1abc9c;"></div>
+                        <span><strong>DimProdi</strong> - Dimensi Program Studi</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e67e22;"></div>
+                        <span><strong>DimPreferensi</strong> - Dimensi Preferensi</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Benefits -->
+            <div class="benefits">
+                <h3>🚀 Keunggulan Arsitektur Snowflake</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <h4>🔧 Normalisasi Tinggi</h4>
+                        <p>Struktur terpisah mengurangi redundansi data</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4>📊 SCD Type 2</h4>
+                        <p>Mendukung tracking perubahan historis data</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4>🔑 Surrogate Keys</h4>
+                        <p>Key yang stabil untuk referensi antar tabel</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4>📈 Measures Terpusat</h4>
+                        <p>Semua metrik bisnis di tabel fakta</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4>🔗 Relasi Jelas</h4>
+                        <p>Foreign key yang jelas antar tabel</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h4>⚡ Performa Optimal</h4>
+                        <p>Index pada kombinasi key untuk query cepat</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+

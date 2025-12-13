@@ -1,0 +1,206 @@
+/* Custom Styles untuk Header Tabel dan Kalender */
+
+/* Header Tabel - Warna Biru dengan Border Radius */
+.table thead th {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 15px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+}
+
+/* Border radius untuk header tabel pojok kiri atas */
+.table thead th:first-child {
+    border-top-left-radius: 12px !important;
+}
+
+/* Border radius untuk header tabel pojok kanan atas */
+.table thead th:last-child {
+    border-top-right-radius: 12px !important;
+}
+
+/* Header Tabel untuk tabel striped */
+.table-striped thead th {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+/* Header Tabel untuk tabel bordered */
+.table-bordered thead th {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border: 1px solid #0d6efd !important;
+}
+
+/* Header Tabel untuk tabel hover */
+.table-hover thead th {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+/* Kalender Header - Warna Biru dengan Border Radius */
+.fc-header-toolbar {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 15px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Kalender Container dengan Border Radius */
+.fc {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Kalender View dengan Border Radius */
+.fc-view-harness {
+    border-radius: 0 0 12px 12px !important;
+    overflow: hidden !important;
+}
+
+/* FullCalendar theme adjustments */
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border-color: #dee2e6 !important;
+}
+
+.fc-scrollgrid {
+    border-radius: 0 0 12px 12px !important;
+    overflow: hidden !important;
+}
+
+.fc-header-toolbar .fc-toolbar-chunk {
+    background-color: transparent !important;
+}
+
+.fc-header-toolbar .fc-button {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: white !important;
+    border-radius: 6px !important;
+}
+
+.fc-header-toolbar .fc-button:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.fc-header-toolbar .fc-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+}
+
+.fc-header-toolbar .fc-button-primary:not(:disabled):active {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Kalender Title */
+.fc-header-toolbar .fc-toolbar-title {
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 1.5rem !important;
+}
+
+/* Custom Table Styling dengan Border Radius */
+.table {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Border radius untuk baris terakhir tabel pojok kiri bawah */
+.table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px !important;
+}
+
+/* Border radius untuk baris terakhir tabel pojok kanan bawah */
+.table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px !important;
+}
+
+/* Table wrapper dengan border radius */
+.table-responsive {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+/* Card dengan tabel di dalamnya */
+.card {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-body {
+    border-radius: 0 0 12px 12px !important;
+}
+
+/* Modal dengan border radius */
+.modal-content {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+.modal-header {
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.modal-body {
+    border-radius: 0 !important;
+}
+
+.modal-footer {
+    border-radius: 0 0 12px 12px !important;
+}
+
+/* DataTable wrapper dengan border radius */
+.dataTables_wrapper {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table thead th {
+        padding: 8px 10px !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .fc-header-toolbar {
+        padding: 10px !important;
+    }
+    
+    .fc-header-toolbar .fc-toolbar-title {
+        font-size: 1.2rem !important;
+    }
+    
+    /* Reduce border radius on mobile for better use of space */
+    .table,
+    .fc,
+    .card,
+    .modal-content {
+        border-radius: 8px !important;
+    }
+    
+    .table thead th:first-child,
+    .table thead th:last-child {
+        border-top-left-radius: 8px !important;
+        border-top-right-radius: 8px !important;
+    }
+    
+    .table tbody tr:last-child td:first-child,
+    .table tbody tr:last-child td:last-child {
+        border-bottom-left-radius: 8px !important;
+        border-bottom-right-radius: 8px !important;
+    }
+}

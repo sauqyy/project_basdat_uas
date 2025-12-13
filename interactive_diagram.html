@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Data Warehouse Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .diagram-container {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .mermaid {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .info-panel h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        
+        .table-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .table-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .table-card.fact { border-left-color: #e74c3c; }
+        .table-card.dimension { border-left-color: #3498db; }
+        
+        .table-card h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        
+        .attributes {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .attribute {
+            margin: 2px 0;
+            padding: 2px 5px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .attribute.key {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .attribute.measure {
+            background: #f39c12;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Data Warehouse Snowflake</h1>
+            <p>Interactive Schema Visualization</p>
+        </div>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+                erDiagram
+                    FactJadwal {
+                        int id PK
+                        string dosen_key FK
+                        string mata_kuliah_key FK
+                        string ruangan_key FK
+                        string waktu_key FK
+                        string prodi_key FK
+                        string preferensi_key FK
+                        int jumlah_sks
+                        int durasi_menit
+                        int kapasitas_kelas
+                        int jumlah_mahasiswa
+                        decimal utilisasi_ruangan
+                        int prioritas_preferensi
+                        boolean konflik_jadwal
+                        int tingkat_konflik
+                        boolean status_aktif
+                    }
+                    
+                    DimDosen {
+                        int id PK
+                        string dosen_key UK
+                        string nip UK
+                        string nama_dosen
+                        string email
+                        string prodi
+                        string role
+                        text profile_picture
+                        text judul_skripsi
+                        boolean is_active
+                        timestamp valid_from
+                        timestamp valid_to
+                    }
+                    
+                    DimMataKuliah {
+                        int id PK
+                        string mata_kuliah_key UK
+                        string kode_mk UK
+                        string nama_mk
+                        int sks
+                        string semester
+                        string prodi
+                        int kapasitas
+                        text deskripsi
+                        string tipe_kelas
+                        int menit_per_sks
+                        boolean ada_praktikum
+                        int sks_praktikum
+                        int sks_materi
+                        boolean is_active
+                        timestamp valid_from
+                        timestamp valid_to
+                    }
+                    
+                    DimRuangan {
+                        int id PK
+                        string ruangan_key UK
+                        string kode_ruangan UK
+                        string nama_ruangan
+                        int kapasitas
+                        string tipe_ruangan
+                        text fasilitas
+                        string prodi
+                        boolean status
+                        boolean is_active
+                        timestamp valid_from
+                        timestamp valid_to
+                    }
+                    
+                    DimWaktu {
+                        int id PK
+                        string waktu_key UK
+                        string hari
+                        time jam_mulai
+                        time jam_selesai
+                        string semester
+                        int tahun_akademik
+                        string periode
+                        int hari_ke
+                        string slot_waktu
+                        int durasi_menit
+                        boolean is_active
+                    }
+                    
+                    DimProdi {
+                        int id PK
+                        string prodi_key UK
+                        string kode_prodi UK
+                        string nama_prodi
+                        string fakultas
+                        text deskripsi
+                        string akreditasi
+                        boolean is_active
+                        timestamp valid_from
+                        timestamp valid_to
+                    }
+                    
+                    DimPreferensi {
+                        int id PK
+                        string preferensi_key UK
+                        string dosen_id
+                        string mata_kuliah_id
+                        json preferensi_hari
+                        json preferensi_jam
+                        int prioritas
+                        text catatan
+                        boolean is_active
+                        timestamp valid_from
+                        timestamp valid_to
+                    }
+                    
+                    FactJadwal ||--|| DimDosen : "dosen_key"
+                    FactJadwal ||--|| DimMataKuliah : "mata_kuliah_key"
+                    FactJadwal ||--|| DimRuangan : "ruangan_key"
+                    FactJadwal ||--|| DimWaktu : "waktu_key"
+                    FactJadwal ||--|| DimProdi : "prodi_key"
+                    FactJadwal ||--o| DimPreferensi : "preferensi_key"
+            </div>
+            
+            <div class="info-panel">
+                <h3>📊 Schema Information</h3>
+                <div class="table-info">
+                    <div class="table-card fact">
+                        <h4>📈 FactJadwal (Fact Table)</h4>
+                        <div class="attributes">
+                            <div class="attribute measure">jumlah_sks</div>
+                            <div class="attribute measure">durasi_menit</div>
+                            <div class="attribute measure">kapasitas_kelas</div>
+                            <div class="attribute measure">jumlah_mahasiswa</div>
+                            <div class="attribute measure">utilisasi_ruangan</div>
+                            <div class="attribute measure">prioritas_preferensi</div>
+                            <div class="attribute measure">konflik_jadwal</div>
+                            <div class="attribute measure">tingkat_konflik</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card dimension">
+                        <h4>👨‍🏫 DimDosen</h4>
+                        <div class="attributes">
+                            <div class="attribute key">dosen_key</div>
+                            <div class="attribute">nip</div>
+                            <div class="attribute">nama_dosen</div>
+                            <div class="attribute">email</div>
+                            <div class="attribute">prodi</div>
+                            <div class="attribute">role</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card dimension">
+                        <h4>📚 DimMataKuliah</h4>
+                        <div class="attributes">
+                            <div class="attribute key">mata_kuliah_key</div>
+                            <div class="attribute">kode_mk</div>
+                            <div class="attribute">nama_mk</div>
+                            <div class="attribute">sks</div>
+                            <div class="attribute">semester</div>
+                            <div class="attribute">kapasitas</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card dimension">
+                        <h4>🏢 DimRuangan</h4>
+                        <div class="attributes">
+                            <div class="attribute key">ruangan_key</div>
+                            <div class="attribute">kode_ruangan</div>
+                            <div class="attribute">nama_ruangan</div>
+                            <div class="attribute">kapasitas</div>
+                            <div class="attribute">tipe_ruangan</div>
+                            <div class="attribute">fasilitas</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card dimension">
+                        <h4>⏰ DimWaktu</h4>
+                        <div class="attributes">
+                            <div class="attribute key">waktu_key</div>
+                            <div class="attribute">hari</div>
+                            <div class="attribute">jam_mulai</div>
+                            <div class="attribute">jam_selesai</div>
+                            <div class="attribute">semester</div>
+                            <div class="attribute">tahun_akademik</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card dimension">
+                        <h4>🎓 DimProdi</h4>
+                        <div class="attributes">
+                            <div class="attribute key">prodi_key</div>
+                            <div class="attribute">kode_prodi</div>
+                            <div class="attribute">nama_prodi</div>
+                            <div class="attribute">fakultas</div>
+                            <div class="attribute">akreditasi</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card dimension">
+                        <h4>⭐ DimPreferensi</h4>
+                        <div class="attributes">
+                            <div class="attribute key">preferensi_key</div>
+                            <div class="attribute">dosen_id</div>
+                            <div class="attribute">mata_kuliah_id</div>
+                            <div class="attribute">preferensi_hari</div>
+                            <div class="attribute">preferensi_jam</div>
+                            <div class="attribute">prioritas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            er: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

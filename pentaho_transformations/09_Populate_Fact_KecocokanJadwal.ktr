@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>09_Populate_Fact_KecocokanJadwal</name>
+    <description>Populate FactKecocokanJadwal from fact_jadwal and dim_preferensi</description>
+    <extended_description>ETL Transformation to calculate schedule match with preferences and populate FactKecocokanJadwal fact table.</extended_description>
+    <trans_version>1.0</trans_version>
+    <trans_type>Normal</trans_type>
+  </info>
+  <order>
+    <hop>
+      <from>Table Input - FactJadwal with Preferensi</from>
+      <to>Calculator - Calculate Match</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Calculator - Calculate Match</from>
+      <to>Table Output - FactKecocokanJadwal</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <steps>
+    <step>
+      <name>Table Input - FactJadwal with Preferensi</name>
+      <type>TableInput</type>
+      <connection>DW_Connection</connection>
+      <sql>SELECT 
+    f.dosen_key,
+    f.preferensi_key,
+    f.waktu_key,
+    w.hari,
+    w.jam_mulai,
+    w.jam_selesai,
+    p.preferensi_hari,
+    p.preferensi_jam,
+    p.prioritas
+FROM fact_jadwal f
+INNER JOIN dim_waktu w ON f.waktu_key = w.waktu_key
+LEFT JOIN dim_preferensi p ON f.preferensi_key = p.preferensi_key
+WHERE f.status_aktif = 1
+AND f.preferensi_key IS NOT NULL;</sql>
+    </step>
+    <step>
+      <name>Calculator - Calculate Match</name>
+      <type>Calculator</type>
+      <calculation>
+        <field>
+          <name>preferensi_hari_terpenuhi</name>
+          <type>Integer</type>
+          <value>CASE 
+    WHEN preferensi_hari LIKE CONCAT('%', hari, '%') THEN 1
+    ELSE 0
+END</value>
+        </field>
+        <field>
+          <name>preferensi_jam_terpenuhi</name>
+          <type>Integer</type>
+          <value>CASE 
+    WHEN preferensi_jam LIKE CONCAT('%', jam_mulai, '%') OR preferensi_jam LIKE CONCAT('%', jam_selesai, '%') THEN 1
+    ELSE 0
+END</value>
+        </field>
+        <field>
+          <name>persentase_kecocokan</name>
+          <type>Number</type>
+          <value>CASE 
+    WHEN preferensi_hari_terpenuhi = 1 AND preferensi_jam_terpenuhi = 1 THEN 100
+    WHEN preferensi_hari_terpenuhi = 1 OR preferensi_jam_terpenuhi = 1 THEN 50
+    ELSE 0
+END</value>
+        </field>
+        <field>
+          <name>skor_kecocokan</name>
+          <type>Integer</type>
+          <value>CASE 
+    WHEN preferensi_hari_terpenuhi = 1 AND preferensi_jam_terpenuhi = 1 THEN prioritas * 2
+    WHEN preferensi_hari_terpenuhi = 1 OR preferensi_jam_terpenuhi = 1 THEN prioritas
+    ELSE 0
+END</value>
+        </field>
+      </calculation>
+    </step>
+    <step>
+      <name>Table Output - FactKecocokanJadwal</name>
+      <type>TableOutput</type>
+      <connection>DW_Connection</connection>
+      <table>fact_kecocokan_jadwal</table>
+      <commit>1000</commit>
+      <use_batch>Y</use_batch>
+      <specify_fields>Y</specify_fields>
+      <fields>
+        <field><column>dosen_key</column><name>dosen_key</name></field>
+        <field><column>preferensi_key</column><name>preferensi_key</name></field>
+        <field><column>waktu_key</column><name>waktu_key</name></field>
+        <field><column>preferensi_hari_terpenuhi</column><name>preferensi_hari_terpenuhi</name></field>
+        <field><column>preferensi_jam_terpenuhi</column><name>preferensi_jam_terpenuhi</name></field>
+        <field><column>persentase_kecocokan</column><name>persentase_kecocokan</name></field>
+        <field><column>skor_kecocokan</column><name>skor_kecocokan</name></field>
+      </fields>
+    </step>
+  </steps>
+</transformation>
+
