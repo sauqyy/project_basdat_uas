@@ -12,7 +12,7 @@ Sebelum populate fact tables, pastikan:
 2. ✅ Ada mata kuliah, dosen, dan ruangan
 3. ✅ Dimension tables sudah ter-populate (atau akan di-populate otomatis)
 
----
+---AWJDHAUIWDGAUWHD(*AW)
 
 ## 🚀 CARA CEPAT (RECOMMENDED)
 

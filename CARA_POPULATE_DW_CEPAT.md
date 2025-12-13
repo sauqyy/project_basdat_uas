@@ -7,7 +7,7 @@ Jalankan script PHP langsung:
 ```bash
 php populate_dw.php
 ```
-
+awjdbawduawudoh
 Script ini akan:
 - ✅ Clear semua data warehouse yang lama
 - ✅ Populate semua dimension tables

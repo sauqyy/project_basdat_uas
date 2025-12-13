@@ -3,7 +3,7 @@
 ## ✅ Solusi: Gunakan SQL Langsung di Table Input
 
 Karena Calculator tidak tersedia, kita akan menghitung semua field langsung di SQL query.
-
+AWBDiuawgduiaWYDgAWuidgAWUIDGAWID GAOIWDBAWUId
 ---
 
 ## 🚀 Cara 1: Menggunakan SQL Langsung (RECOMMENDED)
